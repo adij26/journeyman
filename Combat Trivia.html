@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Journeyman: Combat Trivia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0b0d; --panel:#16141a; --panel2:#1e1b22; --line:#2c2830;
+  --bone:#f2ece0; --muted:#9a948a; --red:#d62839; --red2:#8f1422; --gold:#e8b84a;
+  --t1:#9a968e; --t2:#4f86e8; --t3:#38b27a; --t4:#a46be0; --t5:#e8b84a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--bone);font-family:"Barlow",system-ui,sans-serif;min-height:100%}
+body{background:
+  radial-gradient(1200px 500px at 50% -200px,rgba(214,40,57,.18),transparent 70%),
+  repeating-linear-gradient(90deg,rgba(255,255,255,.012) 0 2px,transparent 2px 6px),var(--bg)}
+.wrap{max-width:640px;margin:0 auto;padding:20px 18px 60px}
+.top{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.brand{font-family:"Anton",Impact,sans-serif;font-size:26px;letter-spacing:.06em;line-height:1}
+.brand small{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;font-size:12px;letter-spacing:.32em;color:var(--red);margin-top:4px}
+.daytag{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;letter-spacing:.14em;font-size:13px;color:var(--muted);text-align:right;text-transform:uppercase}
+.daytag b{color:var(--bone);font-size:16px;display:block}
+h1{font-family:"Anton",Impact,sans-serif;font-size:clamp(44px,11vw,76px);line-height:.92;letter-spacing:.01em;text-transform:uppercase}
+h1 em{font-style:normal;color:var(--red)}
+.lede{font-size:18px;color:#d9d2c4;margin:16px 0 22px;line-height:1.45;max-width:34em}
+.lede b{color:var(--bone)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px}
+.label{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;letter-spacing:.2em;text-transform:uppercase;font-size:12px;color:var(--muted)}
+.ladder{display:grid;gap:6px;margin-top:10px}
+.rung{display:flex;align-items:center;gap:10px;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;font-size:18px;letter-spacing:.04em}
+.rung .bar{height:8px;border-radius:2px}
+.rung .pts{margin-left:auto;color:var(--muted);font-size:16px}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.rule{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px;text-align:center}
+.rule b{font-family:"Anton",Impact,sans-serif;font-size:28px;display:block;letter-spacing:.02em}
+.rule span{font-family:"Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;font-size:12px;color:var(--muted)}
+.btn{display:block;width:100%;border:0;border-radius:6px;background:var(--red);color:#fff;font-family:"Anton",Impact,sans-serif;font-size:24px;letter-spacing:.08em;text-transform:uppercase;padding:16px;cursor:pointer;box-shadow:0 4px 0 var(--red2);transition:transform .06s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--red2)}
+.btn.ghost{background:transparent;border:1px solid var(--line);box-shadow:none;font-size:18px;color:var(--bone)}
+.btn:disabled{opacity:.5;cursor:default}
+.foot{margin-top:18px;font-size:13px;color:var(--muted);line-height:1.5}
+/* round */
+.rhead{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px}
+.rnum{font-family:"Anton",Impact,sans-serif;font-size:40px;line-height:1;text-transform:uppercase}
+.rnum span{color:var(--muted);font-size:22px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.chip{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;letter-spacing:.14em;font-size:12px;text-transform:uppercase;padding:5px 9px;border-radius:3px;border:1px solid var(--line);background:var(--panel2)}
+.chip.h{border-color:var(--red);color:#ff8a96}
+.timer{height:10px;background:var(--panel2);border-radius:5px;overflow:hidden;margin:4px 0 6px;border:1px solid var(--line)}
+.timer i{display:block;height:100%;background:linear-gradient(90deg,var(--red),#ff5a5f);transform-origin:left;width:100%}
+.secs{font-family:"Anton",Impact,sans-serif;font-size:20px;text-align:right;color:var(--muted)}
+.secs.low{color:var(--red)}
+.prompt{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:clamp(26px,6.4vw,36px);line-height:1.12;margin:16px 0 20px}
+.inrow{display:flex;gap:8px}
+input.ans{flex:1;min-width:0;background:#0f0e11;border:2px solid var(--line);border-radius:6px;color:var(--bone);font-size:20px;font-family:"Barlow";padding:14px;outline:none}
+input.ans:focus{border-color:var(--bone)}
+.go{width:auto;padding:0 20px;font-size:20px}
+.msg{min-height:26px;margin-top:10px;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;font-size:18px;letter-spacing:.03em;color:#ff8a96}
+.shake{animation:sh .3s}
+@keyframes sh{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.pips{display:flex;gap:5px;margin-bottom:18px}
+.pip{flex:1;height:5px;border-radius:2px;background:var(--panel2)}
+/* reveal */
+.verdict{text-align:center;padding:26px 16px 22px;border-radius:6px;border:1px solid var(--line);background:var(--panel)}
+.verdict .ans{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:30px;line-height:1.1}
+.verdict .tier{font-family:"Anton",Impact,sans-serif;font-size:clamp(34px,9vw,52px);text-transform:uppercase;line-height:1;margin:12px 0 6px;letter-spacing:.02em}
+.verdict .pts{font-family:"Anton",Impact,sans-serif;font-size:22px;color:var(--muted)}
+.verdict .crowd{margin-top:8px;font-size:15px;color:var(--muted)}
+.deep{margin-top:14px}
+.deep ul{list-style:none;margin-top:8px;display:grid;gap:6px}
+.deep li{display:flex;justify-content:space-between;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:9px 12px;font-size:16px}
+.deep li span{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;letter-spacing:.1em;font-size:12px;text-transform:uppercase;white-space:nowrap}
+.spacer{height:16px}
+/* impact meter */
+.said{text-align:center;margin-bottom:14px}
+.said .ans{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:32px;line-height:1.1;margin-top:4px}
+.fix{margin-top:6px;font-size:14px;color:var(--muted)}
+.fix b{color:var(--bone)}
+.meter{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 12px 14px}
+.mhead{display:flex;justify-content:space-between;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:var(--muted);margin-bottom:10px}
+.mhead #mstat{letter-spacing:.08em;font-size:14px}
+.track{position:relative;height:300px;border-radius:4px;overflow:hidden;background:#0f0e11}
+.band{position:relative;height:20%;display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:0 14px 0 64px;border-top:2px solid rgba(242,236,224,.10);transition:background .25s}
+.band:first-child{border-top:0}
+.band::before{content:"";position:absolute;left:0;right:0;top:-2px;height:2px;background:linear-gradient(90deg,#d62839 0 33%,#f2ece0 33% 66%,#2c5cc5 66%);opacity:.35}
+.band:first-child::before{display:none}
+.band span{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:#5d5862;transition:color .2s}
+.band em{font-style:normal;font-family:"Anton",Impact,sans-serif;font-size:14px;color:#4a4650;width:30px;text-align:right}
+.band.lit span{color:#c9c2b6}
+.band.hit{background:color-mix(in srgb,var(--c) 22%,transparent)}
+.band.hit span,.band.hit em{color:var(--c)}
+.trail{position:absolute;left:22px;top:0;width:8px;height:0;border-radius:0 0 4px 4px;background:linear-gradient(180deg,rgba(214,40,57,.15),var(--red))}
+.glove{position:absolute;left:8px;top:0;font-size:34px;line-height:1;transform:translateY(-50%) rotate(-90deg);filter:drop-shadow(0 3px 4px rgba(0,0,0,.6))}
+.track.thud{animation:thud .35s}
+@keyframes thud{0%{transform:translateY(0)}30%{transform:translateY(5px)}60%{transform:translateY(-2px)}100%{transform:none}}
+.after{display:none;margin-top:14px}
+.after.on{display:block;animation:fadeup .3s ease-out}
+@keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* results */
+.score{text-align:center;padding:10px 0 6px}
+.score .big{font-family:"Anton",Impact,sans-serif;font-size:clamp(70px,20vw,120px);line-height:.9}
+.score .big small{font-size:.32em;color:var(--muted)}
+.score .rank{font-family:"Anton",Impact,sans-serif;font-size:28px;text-transform:uppercase;color:var(--red);letter-spacing:.04em;margin-top:6px}
+.cardline{display:grid;gap:2px;margin:18px 0}
+.bout{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:10px 12px;background:var(--panel);border-left:4px solid var(--line)}
+.bout:first-child{border-radius:4px 4px 0 0}.bout:last-child{border-radius:0 0 4px 4px}
+.bout .n{font-family:"Anton",Impact,sans-serif;color:var(--muted)}
+.bout .q{font-size:13px;color:var(--muted);line-height:1.3}
+.bout .a{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;font-size:19px}
+.bout .t{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:13px;text-align:right}
+.bout .t b{display:block;font-family:"Anton",Impact,sans-serif;font-size:18px;letter-spacing:0}
+.board{margin-top:18px}
+.board ol{list-style:none;margin-top:8px;display:grid;gap:4px}
+.board li{display:flex;justify-content:space-between;padding:8px 12px;background:var(--panel);border-radius:4px;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;font-size:18px}
+.board li.me{outline:1px solid var(--red)}
+.next{text-align:center;margin-top:20px;font-family:"Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.next b{display:block;font-family:"Anton",Impact,sans-serif;font-size:34px;color:var(--bone);letter-spacing:.04em}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--bone);color:#111;font-weight:600;padding:10px 16px;border-radius:4px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:18px;z-index:5}
+.modal .card{max-width:520px;width:100%;max-height:85vh;overflow:auto}
+.modal h3{font-family:"Anton",Impact,sans-serif;font-size:26px;text-transform:uppercase;margin-bottom:10px}
+.modal p{color:#d9d2c4;line-height:1.5;margin-bottom:10px}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast"></div>
+<script>
+/* ===================== CONFIG ===================== */
+const EPOCH = Date.UTC(2026,10,20);           // Card #1 = Nov 20, 2026 (Eastern)
+const TZ = "America/New_York";
+const ROUND_SECS = 25;
+const TIERS = [null,
+  {n:"Casual",p:10,c:"var(--t1)",e:"⬜"},
+  {n:"PPV Buyer",p:25,c:"var(--t2)",e:"🟦"},
+  {n:"Analyst",p:50,c:"var(--t3)",e:"🟩"},
+  {n:"Coach",p:75,c:"var(--t4)",e:"🟪"},
+  {n:"Unanimous Champ",p:100,c:"var(--t5)",e:"🟨"}];
+const SLOTS = {
+  ufc_men:{label:"UFC · Men"}, women:{label:"Women's"}, box_modern:{label:"Boxing · Modern"},
+  old_school:{label:"Old School · Pre-2000"}, records:{label:"Records & Titles"},
+  wild:{label:"Wild Card"}, new_era:{label:"New Era · 2021+"}
+};
+const SLOT_ORDER = ["ufc_men","women","box_modern","old_school","records","wild","new_era"];
+const RANKS = [[0,"Regional Scene"],[150,"Prelims"],[300,"Main Card"],[425,"Co-Main Event"],[550,"Main Event"]];
+
+/* ===================== QUESTION BANK =====================
+   a: "tier Name|alias|alias; ..."  tiers 1 (Casual) .. 5 (Unanimous Champ)  */
+const BANK = {
+ufc_men:[
+{id:"um1",d:"H",q:"Name a man who has held a UFC heavyweight title (undisputed or interim).",
+a:`1 Jon Jones|Bones;1 Francis Ngannou|The Predator;1 Brock Lesnar;2 Stipe Miocic;2 Daniel Cormier|DC;2 Randy Couture|The Natural;2 Cain Velasquez;2 Tom Aspinall;3 Junior dos Santos|JDS|Cigano;3 Fabricio Werdum;3 Frank Mir;3 Andrei Arlovski|Pitbull;3 Ciryl Gane|Bon Gamin;3 Tim Sylvia;3 Antonio Rodrigo Nogueira|Minotauro|Big Nog|Rodrigo Nogueira;4 Mark Coleman;4 Shane Carwin;4 Josh Barnett;4 Bas Rutten|El Guapo;5 Kevin Randleman;5 Maurice Smith;5 Ricco Rodriguez`},
+{id:"um2",d:"M",q:"Name a UFC lightweight champion (undisputed or interim).",
+a:`1 Conor McGregor|Notorious|Conor;1 Khabib Nurmagomedov|Khabib|The Eagle;1 Islam Makhachev;2 Ilia Topuria|El Matador;2 Charles Oliveira|Do Bronx;2 Dustin Poirier|The Diamond;2 Tony Ferguson|El Cucuy;2 BJ Penn|The Prodigy;2 Justin Gaethje|The Highlight;3 Frankie Edgar|The Answer;3 Anthony Pettis|Showtime;3 Eddie Alvarez;3 Benson Henderson|Ben Henderson|Smooth;4 Rafael dos Anjos|RDA;4 Sean Sherk;5 Jens Pulver|Lil Evil`},
+{id:"um3",d:"H",q:"Name a man who fought Anderson Silva in the UFC.",
+a:`1 Chris Weidman;1 Chael Sonnen;1 Israel Adesanya|Izzy|The Last Stylebender;2 Vitor Belfort;2 Michael Bisping;2 Nick Diaz;2 Forrest Griffin;2 Rich Franklin;2 Dan Henderson|Hendo;3 Daniel Cormier|DC;3 Stephan Bonnar;3 Demian Maia;3 Yushin Okami;3 Chris Leben;3 Kelvin Gastelum;3 Jared Cannonier;3 Uriah Hall;4 Derek Brunson;4 Nate Marquardt;4 Thales Leites;4 Patrick Cote;5 Travis Lutter;5 James Irvin`},
+{id:"um4",d:"M",q:"Name a UFC welterweight champion (undisputed or interim).",
+a:`1 Georges St-Pierre|GSP|Georges St Pierre;1 Kamaru Usman|Nigerian Nightmare;2 Matt Hughes;2 Colby Covington|Chaos;2 Tyron Woodley;2 Robbie Lawler|Ruthless;2 Leon Edwards|Rocky;2 Belal Muhammad;2 Islam Makhachev;3 BJ Penn;3 Matt Serra;3 Johny Hendricks|Johnny Hendricks;3 Jack Della Maddalena|JDM;3 Carlos Condit;4 Pat Miletich;5 Carlos Newton`},
+{id:"um5",d:"M",q:"Name a man who fought Khabib Nurmagomedov in the UFC.",
+a:`1 Conor McGregor|Notorious|Conor;1 Dustin Poirier;1 Justin Gaethje;2 Edson Barboza;3 Al Iaquinta|Raging Al;3 Michael Johnson;3 Rafael dos Anjos|RDA;4 Gleison Tibau;4 Pat Healy;4 Abel Trujillo;4 Thiago Tavares;5 Darrell Horcher;5 Kamal Shalorus`},
+{id:"um6",d:"M",q:"Name a UFC light heavyweight champion (undisputed or interim).",
+a:`1 Jon Jones|Bones;1 Alex Pereira|Poatan;1 Chuck Liddell|The Iceman;2 Tito Ortiz;2 Daniel Cormier|DC;2 Randy Couture;2 Quinton Jackson|Rampage;3 Forrest Griffin;3 Rashad Evans;3 Lyoto Machida|The Dragon;3 Mauricio Rua|Shogun;3 Jiri Prochazka;3 Magomed Ankalaev;3 Glover Teixeira;3 Jan Blachowicz;3 Jamahal Hill|Sweet Dreams;4 Vitor Belfort;4 Frank Shamrock;5 Ovince Saint Preux|OSP`},
+{id:"um7",d:"H",q:"Name a man who fought Jon Jones in the UFC.",
+a:`1 Daniel Cormier|DC;2 Alexander Gustafsson|The Mauler;2 Stipe Miocic;2 Ciryl Gane;2 Dominick Reyes;2 Rashad Evans;2 Chael Sonnen;2 Quinton Jackson|Rampage;2 Lyoto Machida;3 Mauricio Rua|Shogun;3 Vitor Belfort;3 Glover Teixeira;3 Thiago Santos;3 Anthony Smith|Lionheart;3 Ovince Saint Preux|OSP;3 Ryan Bader;4 Stephan Bonnar;4 Matt Hamill;4 Brandon Vera;5 Vladimir Matyushenko;5 Jake O'Brien;5 Andre Gusmao`}
+],
+women_ufc:[
+{id:"wu1",d:"M",q:"Name a woman who has held a UFC title (any division, undisputed or interim).",
+a:`1 Ronda Rousey|Rowdy;1 Amanda Nunes|The Lioness;2 Holly Holm|Preacher's Daughter;2 Valentina Shevchenko|Bullet;2 Miesha Tate;2 Rose Namajunas|Thug Rose;2 Zhang Weili|Weili Zhang;2 Joanna Jedrzejczyk|Joanna Champion;2 Cris Cyborg|Cyborg|Cristiane Justino;3 Julianna Pena|Venezuelan Vixen;3 Alexa Grasso;3 Kayla Harrison;3 Carla Esparza|Cookie Monster;4 Germaine de Randamie;4 Raquel Pennington;5 Nicco Montano`},
+{id:"wu2",d:"H",q:"Name a woman who fought Amanda Nunes in the UFC.",
+a:`1 Ronda Rousey;2 Julianna Pena;2 Cris Cyborg|Cyborg;2 Holly Holm;2 Miesha Tate;2 Valentina Shevchenko;3 Germaine de Randamie;3 Cat Zingano;3 Raquel Pennington;3 Irene Aldana;4 Felicia Spencer;4 Megan Anderson;4 Sara McMann;4 Shayna Baszler;5 Sheila Gaff`},
+{id:"wu3",d:"H",q:"Name a woman who fought Ronda Rousey or Holly Holm in the UFC.",
+a:`1 Amanda Nunes;2 Miesha Tate;2 Valentina Shevchenko;2 Cris Cyborg|Cyborg;2 Ronda Rousey;2 Holly Holm;3 Kayla Harrison;3 Cat Zingano;3 Germaine de Randamie;3 Liz Carmouche;3 Bethe Correia;3 Raquel Pennington;3 Irene Aldana;4 Ketlen Vieira;4 Mayra Bueno Silva;4 Sara McMann;4 Alexis Davis;4 Megan Anderson;5 Yana Santos|Yana Kunitskaya;5 Marion Reneau`},
+{id:"wu4",d:"H",q:"Name a woman who fought Valentina Shevchenko in the UFC.",
+a:`1 Amanda Nunes;2 Alexa Grasso;2 Holly Holm;2 Joanna Jedrzejczyk;3 Julianna Pena;3 Jessica Eye;3 Katlyn Chookagian|Katlyn Cerminara;3 Lauren Murphy;3 Jennifer Maia;3 Manon Fiorot;4 Taila Santos;4 Sarah Kaufman;4 Priscila Cachoeira`}
+],
+women_box:[
+{id:"wb1",d:"M",q:"Name a woman who has held a world title in boxing (any sanctioning body).",
+a:`1 Claressa Shields|GWOAT|T-Rex;1 Katie Taylor;1 Amanda Serrano|The Real Deal;1 Laila Ali;2 Holly Holm;2 Christy Martin;2 Chantelle Cameron;2 Alycia Baumgardner;2 Mikaela Mayer;3 Savannah Marshall;3 Natasha Jonas;3 Lauren Price;3 Seniesa Estrada|Super Bad;3 Jessica McCaskill;3 Cecilia Braekhus|First Lady;3 Ebanie Bridges|Blonde Bomber;3 Franchon Crews-Dezurn|Franchon Crews Dezurn;3 Gabriela Fundora;4 Skye Nicolson;4 Caroline Dubois;4 Ellie Scotney;4 Sandy Ryan;4 Terri Harper;4 Delfine Persoon;4 Yokasta Valle;4 Hanna Gabriels;4 Shannon Courtenay;4 Lucia Rijker;4 Ann Wolfe;4 Mia St John|Mia St. John;5 Regina Halmich;5 Jackie Nava;5 Erica Farias`},
+{id:"wb2",d:"M",q:"Name a woman who won Olympic boxing gold (2012–2024).",
+a:`1 Claressa Shields;1 Katie Taylor;2 Nicola Adams;2 Imane Khelif;2 Lauren Price;3 Kellie Harrington;3 Lin Yu-ting|Lin Yu ting;4 Estelle Mossely;4 Busenaz Surmeneli;4 Sena Irie;4 Stoyka Krasteva;5 Wu Yu;5 Chang Yuan;5 Li Qian`},
+{id:"wb3",d:"H",q:"Name a woman who held a boxing world title before 2010 (any sanctioning body).",
+a:`1 Laila Ali;2 Christy Martin;2 Holly Holm;2 Lucia Rijker;3 Ann Wolfe;3 Regina Halmich;3 Cecilia Braekhus;3 Jacqui Frazier-Lyde|Jacqui Frazier Lyde;4 Ana Maria Torres;4 Jackie Nava;4 Mary Jo Sanders;4 Sumya Anani;4 Myriam Lamare;5 Anne Sophie Mathis;5 Jeannine Garside`},
+{id:"wb4",d:"H",q:"Name a woman who has fought Claressa Shields as a pro.",
+a:`1 Savannah Marshall;2 Christina Hammer;2 Franchon Crews-Dezurn|Franchon Crews Dezurn;2 Hanna Gabriels;3 Maricela Cornejo;3 Ivana Habazin;3 Marie-Eve Dicaire|Marie Eve Dicaire;3 Danielle Perkins;3 Lani Daniels;4 Vanessa Lepage-Joanisse|Vanessa Lepage Joanisse;4 Femke Hermans;4 Tori Nelson;5 Nikki Adler;5 Sydney LeBlanc;5 Szilvia Szabados`}
+],
+box_modern:[
+{id:"bm1",d:"M",q:"Name a boxer Floyd Mayweather Jr. fought as a pro (official bouts).",
+a:`1 Manny Pacquiao|Pacman;1 Conor McGregor|Conor;1 Canelo Alvarez|Canelo|Saul Alvarez;1 Oscar De La Hoya|Golden Boy;2 Ricky Hatton|Hitman;2 Juan Manuel Marquez|JMM;2 Shane Mosley|Sugar Shane;2 Miguel Cotto;2 Marcos Maidana|Chino;2 Arturo Gatti;3 Victor Ortiz;3 Robert Guerrero;3 Andre Berto;3 Zab Judah;3 Diego Corrales|Chico;3 Jose Luis Castillo;4 Carlos Baldomir;4 Sharmba Mitchell;4 DeMarcus Corley;4 Genaro Hernandez;4 Jesus Chavez;5 Angel Manfredy;5 Carlos Hernandez;5 Victoriano Sosa;5 Phillip N'dou|Phillip Ndou;5 Henry Bruseles;5 Emanuel Augustus`},
+{id:"bm2",d:"M",q:"Name a man who held a world heavyweight title (WBA, WBC, IBF or WBO) at any point since 2000.",
+a:`1 Tyson Fury|Gypsy King;1 Anthony Joshua|AJ;1 Oleksandr Usyk;1 Deontay Wilder|Bronze Bomber;1 Wladimir Klitschko|Dr. Steelhammer;2 Vitali Klitschko|Dr. Ironfist;2 Lennox Lewis;2 Andy Ruiz Jr|Andy Ruiz;2 Daniel Dubois|Dynamite;2 David Haye;2 Evander Holyfield;3 Joseph Parker;3 Roy Jones Jr|Roy Jones;3 Hasim Rahman;3 Nikolai Valuev;3 John Ruiz;4 Chris Byrd;4 Lamon Brewster;4 Corrie Sanders;4 Ruslan Chagaev;4 Samuel Peter;4 Sultan Ibragimov;4 Oleg Maskaev;4 Shannon Briggs;4 Bermane Stiverne;4 Charles Martin;4 Kubrat Pulev;5 Sergei Liakhovich;5 Lucas Browne;5 Manuel Charr|Mahmoud Charr;5 Trevor Bryan`},
+{id:"bm3",d:"M",q:"Name a man Canelo Álvarez has fought since 2010.",
+a:`1 Gennady Golovkin|GGG|Triple G;1 Floyd Mayweather|Floyd Mayweather Jr;1 Terence Crawford|Bud;2 Dmitry Bivol;2 Miguel Cotto;2 Amir Khan;2 Jermell Charlo;2 Sergey Kovalev|Krusher;2 Caleb Plant;2 Julio Cesar Chavez Jr;3 Shane Mosley;3 Erislandy Lara;3 Daniel Jacobs;3 Billy Joe Saunders|BJS;3 Callum Smith;3 Jaime Munguia;3 Edgar Berlanga;3 Austin Trout;3 Alfredo Angulo;3 James Kirkland;4 John Ryder;4 Rocky Fielding;4 Avni Yildirim;4 William Scull;4 Liam Smith;4 Josesito Lopez;4 Alfonso Gomez;4 Kermit Cintron;4 Matthew Hatton;5 Ryan Rhodes;5 Carlos Baldomir;5 Lovemore N'dou|Lovemore Ndou;5 Jose Miguel Cotto`},
+{id:"bm4",d:"H",q:"Name a man who has been undisputed champion in boxing's four-belt era (2004–).",
+a:`1 Oleksandr Usyk;1 Canelo Alvarez|Canelo;1 Terence Crawford|Bud;2 Naoya Inoue|Monster;2 Devin Haney;2 Jermell Charlo;3 Teofimo Lopez;3 Josh Taylor;3 Artur Beterbiev;3 Dmitry Bivol;3 Bernard Hopkins|The Executioner;4 Jermain Taylor`},
+{id:"bm5",d:"M",q:"Name a boxer who fought Manny Pacquiao as a pro.",
+a:`1 Floyd Mayweather|Floyd Mayweather Jr;1 Juan Manuel Marquez|JMM;1 Oscar De La Hoya;1 Ricky Hatton;2 Erik Morales|El Terrible;2 Marco Antonio Barrera;2 Miguel Cotto;2 Timothy Bradley|Tim Bradley;2 Shane Mosley;2 Keith Thurman;2 Adrien Broner;3 Antonio Margarito;3 Joshua Clottey;3 Brandon Rios;3 Chris Algieri;3 Yordenis Ugas;3 Jeff Horn;3 Lucas Matthysse;3 Jessie Vargas;3 Mario Barrios;4 David Diaz;4 Oscar Larios;4 Jorge Solis;5 Hector Velazquez;5 Lehlo Ledwaba;5 Agapito Sanchez;5 Emmanuel Lucero;5 Chatchai Sasakul`},
+{id:"bm6",d:"M",q:"Name a man who has fought Tyson Fury, Anthony Joshua or Deontay Wilder as a pro.",
+a:`1 Wladimir Klitschko;1 Oleksandr Usyk;1 Francis Ngannou;1 Andy Ruiz Jr|Andy Ruiz;1 Tyson Fury;1 Deontay Wilder;2 Dillian Whyte;2 Derek Chisora;2 Joseph Parker;2 Alexander Povetkin;2 Daniel Dubois;2 Luis Ortiz|King Kong;2 Zhilei Zhang|Big Bang;3 Kubrat Pulev;3 Robert Helenius;3 Otto Wallin;3 Jermaine Franklin;3 Dominic Breazeale;3 Bermane Stiverne;3 Chris Arreola;3 Charles Martin;3 Carlos Takam;3 Eric Molina;4 Artur Szpilka;4 Gerald Washington;4 Johann Duhaupas;4 Tom Schwarz;4 Francesco Pianeta;4 Steve Cunningham;4 Kevin Johnson;5 Sefer Seferi;5 Martin Rogan;5 Christian Hammer;5 Gary Cornish;5 Michael Sprott`},
+{id:"bm7",d:"H",q:"Name a boxer who has fought Gervonta 'Tank' Davis as a pro.",
+a:`1 Ryan Garcia|KingRy;2 Lamont Roach;2 Isaac Cruz|Pitbull;2 Leo Santa Cruz;2 Rolando Romero|Rolly;3 Mario Barrios;3 Yuriorkis Gamboa;3 Frank Martin;3 Hector Luis Garcia|Hector Garcia;3 Jose Pedraza;4 Jesus Cuellar;4 Liam Walsh;4 Francisco Fonseca;5 Ricardo Nunez;5 Hugo Ruiz`}
+],
+old_school:[
+{id:"os1",d:"M",q:"Name a man who held the world heavyweight title before 2000.",
+a:`1 Muhammad Ali|Cassius Clay|Ali;1 Mike Tyson|Iron Mike;1 George Foreman;1 Joe Frazier|Smokin Joe;1 Evander Holyfield;1 Lennox Lewis;1 Joe Louis|Brown Bomber;1 Rocky Marciano;2 Jack Dempsey;2 Larry Holmes;2 Sonny Liston;2 Jack Johnson;2 Buster Douglas|James Douglas;2 Riddick Bowe;2 Floyd Patterson;2 Ken Norton;2 Leon Spinks;2 Michael Spinks;3 Gene Tunney;3 Max Schmeling;3 Max Baer;3 James J Braddock|Cinderella Man|Jim Braddock;3 Jersey Joe Walcott;3 Ezzard Charles;3 Ingemar Johansson;3 Michael Moorer;3 John L Sullivan;4 James J Corbett|Gentleman Jim;4 Bob Fitzsimmons;4 James J Jeffries;4 Jess Willard;4 Jack Sharkey;4 Primo Carnera;4 Jimmy Ellis;4 Ernie Terrell;4 Tim Witherspoon;4 Trevor Berbick;4 Frank Bruno;4 Oliver McCall;4 Tommy Morrison;4 Ray Mercer;5 Tommy Burns;5 Marvin Hart;5 Pinklon Thomas;5 Tony Tucker;5 Greg Page;5 Gerrie Coetzee;5 Mike Weaver;5 Michael Dokes;5 John Tate;5 Tony Tubbs;5 James Smith|Bonecrusher Smith;5 Herbie Hide;5 Bruce Seldon;5 Henry Akinwande;5 Francesco Damiani;5 Michael Bentt;5 Frans Botha`},
+{id:"os2",d:"M",q:"Name a man Muhammad Ali fought as a pro.",
+a:`1 Joe Frazier;1 George Foreman;1 Sonny Liston;2 Ken Norton;2 Larry Holmes;2 Leon Spinks;2 Floyd Patterson;3 Henry Cooper;3 Ernie Terrell;3 George Chuvalo;3 Joe Bugner;3 Chuck Wepner;3 Earnie Shavers;3 Jerry Quarry;3 Archie Moore;3 Trevor Berbick;4 Oscar Bonavena;4 Cleveland Williams;4 Zora Folley;4 Jimmy Ellis;4 Ron Lyle;4 Doug Jones;4 Bob Foster;4 Buster Mathis;4 Jimmy Young;5 Brian London;5 Karl Mildenberger;5 Tunney Hunsaker;5 Jean-Pierre Coopman|Jean Pierre Coopman;5 Richard Dunn;5 Alfredo Evangelista;5 Rudi Lubbers;5 Mac Foster;5 Al Lewis|Blue Lewis;5 Jurgen Blin`},
+{id:"os3",d:"H",q:"Name a boxer who fought Sugar Ray Leonard as a pro.",
+a:`1 Roberto Duran|Hands of Stone;1 Thomas Hearns|Hitman|Tommy Hearns;1 Marvin Hagler|Marvelous Marvin Hagler;2 Wilfred Benitez;3 Hector Camacho|Macho Camacho;3 Terry Norris;3 Donny Lalonde;3 Floyd Mayweather Sr;4 Kevin Howard;4 Ayub Kalule;4 Dave Boy Green|Dave Green;5 Bruce Finch;5 Larry Bonds;5 Andy Price;5 Pete Ranzany;5 Adolfo Viruet;5 Luis Vega`},
+{id:"os4",d:"M",q:"Name a man who fought Mike Tyson as a pro.",
+a:`1 Evander Holyfield;1 Lennox Lewis;1 Buster Douglas|James Douglas;1 Jake Paul;2 Michael Spinks;2 Larry Holmes;2 Trevor Berbick;2 Frank Bruno;3 Peter McNeeley;3 Razor Ruddock|Donovan Ruddock;3 Andrew Golota;3 Frans Botha;3 Tony Tucker;3 Bruce Seldon;3 Kevin McBride;3 Danny Williams;4 Tyrell Biggs;4 Pinklon Thomas;4 James Smith|Bonecrusher Smith;4 Tony Tubbs;4 Marvis Frazier;4 Mitch Green;4 Lou Savarese;4 Orlin Norris;4 Carl Williams;4 Alex Stewart;4 Henry Tillman;5 Brian Nielsen;5 Jose Ribalta;5 Hector Mercedes`},
+{id:"os5",d:"H",q:"Name a boxer who fought Roberto Durán as a pro.",
+a:`1 Sugar Ray Leonard;2 Thomas Hearns;2 Marvin Hagler;3 Ken Buchanan;3 Wilfred Benitez;3 Iran Barkley;3 Hector Camacho;3 Esteban De Jesus;3 Vinny Paz|Vinny Pazienza;3 Carlos Palomino;4 Davey Moore;4 Pipino Cuevas;4 William Joppy;4 Robbie Sims;4 Kirkland Laing;4 Guts Ishimatsu|Ishimatsu Suzuki;4 Saoul Mamby;5 Pat Lawlor;5 Jimmy Batten;5 Edwin Viruet;5 Ray Lampkin;5 Hector Thompson;5 Lou Bizzarro;5 Monroe Brooks;5 Luigi Minchillo;5 Jorge Castro`},
+{id:"os6",d:"H",q:"Name a man who held a world middleweight title before 2000.",
+a:`1 Marvin Hagler;1 Sugar Ray Robinson;1 Jake LaMotta|Raging Bull;2 Bernard Hopkins;2 Roy Jones Jr;2 Sugar Ray Leonard;2 Thomas Hearns;2 Carlos Monzon;3 Nigel Benn;3 Chris Eubank;3 James Toney;3 Tony Zale;3 Rocky Graziano;3 Emile Griffith;3 Nino Benvenuti;3 Harry Greb;3 Stanley Ketchel;3 Dick Tiger;3 Carmen Basilio;3 Iran Barkley;3 Gerald McClellan;3 Gene Fullmer;3 Randy Turpin;3 Marcel Cerdan;4 Mickey Walker;4 Bobo Olson|Carl Olson;4 Joey Giardello;4 Rodrigo Valdez;4 Alan Minter;4 Vito Antuofermo;4 Mike McCallum;4 Michael Nunn;4 Julian Jackson;4 Sumbu Kalambay;4 William Joppy;5 Paul Pender;5 Terry Downes;5 Hugo Corro;5 Frank Tate;5 Doug DeWitt;5 Keith Holmes;5 Quincy Taylor;5 Lonnie Bradley;5 Otis Grant;5 Hassine Cherifi;5 Shinji Takehara;5 Jorge Castro;5 Reggie Johnson;5 John David Jackson;5 Marcel Thil;5 Freddie Steele;5 Fred Apostoli;5 Ceferino Garcia;5 Billy Papke;5 Tiger Flowers`},
+{id:"os7",d:"H",q:"Name a boxer who fought Joe Louis as a pro.",
+a:`1 Max Schmeling;1 Rocky Marciano;2 Billy Conn;2 Max Baer;2 James J Braddock|Jim Braddock;2 Jersey Joe Walcott;2 Primo Carnera;2 Ezzard Charles;3 Tony Galento|Two Ton Tony Galento;3 Jack Sharkey;3 Tommy Farr;3 Buddy Baer;3 Arturo Godoy;3 Lou Nova;3 Paulino Uzcudun;3 John Henry Lewis;3 Tami Mauriello;4 Abe Simon;4 Bob Pastor;4 King Levinsky;4 Lee Savold;4 Jimmy Bivins;4 Al Ettore;5 Jorge Brescia;5 Natie Brown;5 Nathan Mann;5 Harry Thomas;5 Johnny Paychek;5 Al McCoy;5 Red Burman;5 Gus Dorazio;5 Tony Musto;5 Cesar Brion;5 Jack Kracken`}
+],
+records:[
+{id:"r1",d:"M",q:"Name a fighter who retired undefeated as a pro (boxing or MMA).",
+a:`1 Floyd Mayweather|Floyd Mayweather Jr;1 Rocky Marciano;1 Khabib Nurmagomedov|Khabib;2 Andre Ward|SOG;2 Joe Calzaghe;3 Laila Ali;3 Ricardo Lopez|Finito;4 Sven Ottke;4 Edwin Valero;4 Lucia Rijker;5 Terry Marsh;5 Kim Ji-won|Ji Won Kim;5 Pichit Sitbangprachan;5 Jimmy Barry;5 Jack McAuliffe`},
+{id:"r2",d:"H",q:"Name a fighter who has held UFC titles in two different weight classes.",
+a:`1 Conor McGregor|Conor;1 Jon Jones;1 Amanda Nunes;2 Daniel Cormier|DC;2 Georges St-Pierre|GSP;2 Alex Pereira|Poatan;2 Henry Cejudo|Triple C;2 Ilia Topuria;2 Islam Makhachev;3 BJ Penn;3 Randy Couture`},
+{id:"r3",d:"H",q:"Name a UFC champion who made 5+ title defenses in a single reign.",
+a:`1 Anderson Silva|The Spider;1 Georges St-Pierre|GSP;1 Jon Jones;2 Demetrious Johnson|Mighty Mouse;2 Ronda Rousey;2 Kamaru Usman;2 Israel Adesanya;2 Valentina Shevchenko;2 Amanda Nunes;2 Alexander Volkanovski|Volk;3 Jose Aldo;3 Joanna Jedrzejczyk;3 Matt Hughes;4 Tito Ortiz`},
+{id:"r4",d:"M",q:"Name a boxer who won world titles in 4 or more weight classes.",
+a:`1 Manny Pacquiao;1 Floyd Mayweather|Floyd Mayweather Jr;1 Oscar De La Hoya;1 Canelo Alvarez|Canelo;2 Sugar Ray Leonard;2 Thomas Hearns;2 Roberto Duran;2 Terence Crawford;2 Naoya Inoue;2 Roy Jones Jr;2 Amanda Serrano;3 Juan Manuel Marquez;3 Miguel Cotto;3 Erik Morales;3 Adrien Broner;3 Leo Santa Cruz;3 Pernell Whitaker|Sweet Pea;3 Nonito Donaire;3 Claressa Shields;3 Mikey Garcia;4 Roman Gonzalez|Chocolatito;4 Jorge Arce;4 Kazuto Ioka`},
+{id:"r5",d:"M",q:"Name a Brazilian who has held a UFC title (undisputed or interim).",
+a:`1 Anderson Silva;1 Jose Aldo;1 Amanda Nunes;1 Alex Pereira|Poatan;2 Charles Oliveira|Do Bronx;2 Junior dos Santos|JDS;2 Lyoto Machida;2 Vitor Belfort;2 Mauricio Rua|Shogun;2 Cris Cyborg|Cyborg;3 Fabricio Werdum;3 Antonio Rodrigo Nogueira|Minotauro;3 Glover Teixeira;3 Alexandre Pantoja;3 Renan Barao;3 Rafael dos Anjos;3 Deiveson Figueiredo;4 Jessica Andrade;5 Murilo Bustamante`},
+{id:"r6",d:"M",q:"Name a UFC men's flyweight or bantamweight champion (undisputed or interim).",
+a:`1 Sean O'Malley|Suga;1 Demetrious Johnson|Mighty Mouse;2 Henry Cejudo;2 Merab Dvalishvili;2 Dominick Cruz;2 TJ Dillashaw;2 Aljamain Sterling|Funk Master;3 Brandon Moreno;3 Petr Yan;3 Cody Garbrandt;3 Deiveson Figueiredo;3 Alexandre Pantoja;4 Renan Barao`},
+{id:"r7",d:"M",q:"Name a man who won Olympic boxing gold and later turned pro.",
+a:`1 Muhammad Ali|Cassius Clay|Ali;1 George Foreman;1 Joe Frazier;1 Sugar Ray Leonard;1 Oscar De La Hoya;2 Lennox Lewis;2 Anthony Joshua;2 Oleksandr Usyk;2 Vasiliy Lomachenko|Loma;2 Floyd Patterson;2 Wladimir Klitschko;3 Michael Spinks;3 Leon Spinks;3 Andre Ward;3 Pernell Whitaker;3 Guillermo Rigondeaux;4 Ray Mercer;4 Meldrick Taylor;4 Zou Shiming;4 Ryota Murata;4 Audley Harrison;4 Luke Campbell;4 Robeisy Ramirez;5 Andrew Maynard;5 Odlanier Solis;5 Bakhodir Jalolov`}
+],
+wild:[
+{id:"w1",d:"H",q:"Name a winner of The Ultimate Fighter (any US season).",
+a:`2 Forrest Griffin;2 Michael Bisping;2 Nate Diaz;2 Tony Ferguson;2 Rashad Evans;2 Julianna Pena;3 Kelvin Gastelum;3 Roy Nelson|Big Country;3 Ryan Bader;3 Matt Serra;3 Diego Sanchez;3 Carla Esparza;3 Corey Anderson;3 Michael Chiesa;3 Tatiana Suarez;4 John Dodson;4 Nicco Montano;4 Jonathan Brookins;4 Joe Stevenson;4 Kendall Grove;4 Travis Lutter;4 Mac Danzig;4 Amir Sadollah;4 Efrain Escudero;4 Ross Pearson;4 Court McGee;4 Diego Brandao;4 Ryan Hall;4 Tim Elliott;4 Brad Katona;4 Macy Chiasson;4 Bryan Battle;5 James Wilks;5 Colton Smith;5 Chris Holdsworth;5 Eddie Gordon;5 Andrew Sanchez;5 Jesse Taylor;5 Mike Trizano;5 Juan Espino;5 Ricky Turcios`},
+{id:"w2",d:"M",q:"Name a referee who has worked a UFC or world-title boxing fight.",
+a:`1 Herb Dean;1 Big John McCarthy|John McCarthy;1 Mills Lane;2 Marc Goddard;2 Dan Miragliotta;2 Mario Yamasaki;2 Kenny Bayless;2 Joe Cortez;2 Richard Steele;2 Jason Herzog;3 Keith Peterson;3 Yves Lavigne;3 Steve Mazzagatti;3 Tony Weeks;3 Arthur Mercante Jr;3 Russell Mora;3 Robert Byrd;3 Steve Smoger;3 Jack Reiss;4 Mike Beltran;4 Kevin MacDonald;4 Leon Roberts;4 Arthur Mercante Sr;4 Octavio Meyran;4 Mark Smith;5 Victor Fesechko`},
+{id:"w3",d:"M",q:"Name a boxer or MMA fighter who has wrestled or appeared on a pro wrestling show.",
+a:`1 Brock Lesnar;1 Ronda Rousey;2 CM Punk|Phil Brooks;2 Tyson Fury;2 Floyd Mayweather;2 Mike Tyson;2 Ken Shamrock;3 Dave Bautista|Batista;3 Shayna Baszler;3 Bobby Lashley;3 Matt Riddle;3 Cain Velasquez;4 Dan Severn;4 Josh Barnett;4 Don Frye;4 Butterbean|Eric Esch;4 Alberto Del Rio;4 Kazushi Sakuraba;5 Marina Shafir;5 Jessamyn Duke`},
+{id:"w4",d:"M",q:"Name an MMA promotion other than the UFC (past or present).",
+a:`1 Bellator;1 PFL|Professional Fighters League;2 ONE Championship|ONE FC|ONE;2 Pride|Pride FC;2 Strikeforce;3 WEC|World Extreme Cagefighting;3 Rizin;3 Cage Warriors;3 Invicta|Invicta FC;4 KSW;4 EliteXC;4 Affliction;4 Pancrase;4 Shooto;4 DREAM;4 LFA|Legacy Fighting Alliance;4 Oktagon;5 King of the Cage|KOTC;5 IFL|International Fight League;5 M-1 Global|M-1;5 ACA|Absolute Championship Akhmat;5 Jungle Fight;5 DEEP;5 Brave CF|Brave;5 UAE Warriors`},
+{id:"w5",d:"M",q:"Name a fighter who has competed professionally in both boxing and MMA.",
+a:`1 Conor McGregor|Conor;1 Francis Ngannou;2 Holly Holm;2 Anderson Silva;2 Nate Diaz;2 Tyron Woodley;3 Ben Askren;3 Jorge Masvidal;3 James Toney;3 Vitor Belfort;3 Claressa Shields;3 Mike Perry|Platinum;3 Kimbo Slice;4 Ray Mercer;4 Butterbean|Eric Esch;4 Tito Ortiz;4 Frank Mir;4 Uriah Hall;4 Cris Cyborg;4 Amanda Serrano;5 Heather Hardy`},
+{id:"w6",d:"H",q:"Name a UFC fighter who competed at the Olympics (any sport).",
+a:`1 Ronda Rousey;1 Henry Cejudo;2 Kayla Harrison;2 Daniel Cormier|DC;2 Yoel Romero;3 Dan Henderson;3 Ben Askren;3 Sara McMann;3 Matt Lindland;3 Hector Lombard;4 Mark Coleman;4 Kevin Jackson`},
+{id:"w7",d:"M",q:"Name a UFC or boxing commentator, analyst or ring announcer.",
+a:`1 Joe Rogan;1 Bruce Buffer;1 Michael Buffer;2 Jon Anik;2 Daniel Cormier|DC;2 Dominick Cruz;2 Michael Bisping;2 Mike Goldberg;2 Jim Lampley;2 Max Kellerman;2 Teddy Atlas;2 Ariel Helwani;3 Paul Felder;3 Larry Merchant;3 Harold Lederman;3 Roy Jones Jr;3 Andre Ward;3 Tim Bradley;3 Paulie Malignaggi;3 Joe Tessitore;3 Laura Sanko;3 Brendan Fitzgerald;3 Al Bernstein;3 Mauro Ranallo;4 Kenny Florian;4 Brian Stann;4 Jimmy Smith;4 Megan Olivi;4 Chris Mannix;4 Sergio Mora;4 Joe Martinez;4 Howard Cosell;5 Bob Sheridan;5 Frank Trigg;5 Gus Johnson`}
+],
+new_era:[
+{id:"n1",d:"M",q:"Name a man who won a UFC title fight (undisputed or interim) from 2021 onward.",
+a:`1 Jon Jones;1 Alex Pereira|Poatan;1 Ilia Topuria;1 Islam Makhachev;1 Israel Adesanya|Izzy;1 Sean O'Malley|Suga;1 Francis Ngannou;2 Kamaru Usman;2 Alexander Volkanovski|Volk;2 Tom Aspinall;2 Leon Edwards;2 Sean Strickland;2 Dricus du Plessis|DDP;2 Merab Dvalishvili;2 Charles Oliveira;2 Khamzat Chimaev|Borz;3 Jiri Prochazka;3 Aljamain Sterling;3 Belal Muhammad;3 Alexandre Pantoja;3 Brandon Moreno;3 Justin Gaethje;3 Magomed Ankalaev;3 Ciryl Gane;3 Glover Teixeira;3 Jamahal Hill;3 Deiveson Figueiredo;3 Jack Della Maddalena|JDM;3 Petr Yan`},
+{id:"n2",d:"H",q:"Name a man who has fought Oleksandr Usyk, Terence Crawford or Naoya Inoue since 2021.",
+a:`1 Tyson Fury;1 Anthony Joshua|AJ;1 Canelo Alvarez|Canelo;1 Errol Spence Jr|Errol Spence;2 Nonito Donaire;2 Daniel Dubois;2 Shawn Porter;3 Stephen Fulton;3 Luis Nery;3 Israil Madrimov;3 Paul Butler;4 David Avanesyan;4 Marlon Tapales;4 TJ Doheny;4 Murodjon Akhmadaliev|MJ;4 Ramon Cardenas;5 Ye Joon Kim;5 Michael Dasmarinas;5 Aran Dipaen`},
+{id:"n3",d:"M",q:"Name someone who has boxed Jake Paul (pro bouts).",
+a:`1 Mike Tyson;2 Tommy Fury;2 Nate Diaz;2 Anderson Silva;2 Tyron Woodley;2 Ben Askren;3 Julio Cesar Chavez Jr;3 Mike Perry;3 Nate Robinson;4 AnEsonGib|Ali Loui Al-Fakhri;4 Andre August;5 Ryan Bourland`},
+{id:"n4",d:"M",q:"Name a man who has fought Ilia Topuria or Alex Pereira in the UFC.",
+a:`1 Israel Adesanya|Izzy;1 Alexander Volkanovski|Volk;1 Max Holloway|Blessed;2 Charles Oliveira;2 Magomed Ankalaev;2 Jiri Prochazka;2 Sean Strickland;2 Jamahal Hill;3 Jan Blachowicz;3 Khalil Rountree;3 Josh Emmett;3 Bryce Mitchell;3 Ryan Hall;4 Andreas Michailidis;4 Bruno Silva;4 Jai Herbert;4 Damon Jackson;4 Youssef Zalal`},
+{id:"n5",d:"H",q:"Name a man who held a world title at lightweight or super lightweight (boxing) since 2021.",
+a:`1 Devin Haney;1 Gervonta Davis|Tank;2 Teofimo Lopez;2 Shakur Stevenson;2 Vasiliy Lomachenko|Loma;3 George Kambosos Jr|George Kambosos;3 Regis Prograis;3 Josh Taylor;3 Jose Ramirez;3 Rolando Romero|Rolly;3 Isaac Cruz|Pitbull;4 Subriel Matias;4 Richardson Hitchins;4 Alberto Puello;4 Liam Paro;4 Gary Antuanne Russell;4 Keyshawn Davis`},
+{id:"n6",d:"H",q:"Name a fighter who competed at UFC 300 (April 2024).",
+a:`1 Alex Pereira|Poatan;1 Max Holloway;2 Jamahal Hill;2 Justin Gaethje;2 Zhang Weili|Weili Zhang;2 Charles Oliveira;2 Holly Holm;2 Kayla Harrison;2 Bo Nickal;3 Arman Tsarukyan;3 Jiri Prochazka;3 Aljamain Sterling;3 Yan Xiaonan|Xiaonan Yan;3 Renato Moicano;3 Diego Lopes;3 Deiveson Figueiredo;3 Cody Garbrandt;3 Jim Miller;3 Jessica Andrade;4 Aleksandar Rakic;4 Calvin Kattar;4 Jalin Turner;4 Sodiq Yusuff;4 Bobby Green;4 Marina Rodriguez;5 Cody Brundage`},
+{id:"n7",d:"H",q:"Name a man who has fought Francis Ngannou, Tom Aspinall or Jon Jones since 2021 (any combat sport).",
+a:`1 Tyson Fury;1 Anthony Joshua;1 Stipe Miocic;1 Ciryl Gane;2 Curtis Blaydes;2 Sergei Pavlovich;3 Alexander Volkov;3 Marcin Tybura;3 Renan Ferreira;3 Andrei Arlovski;4 Sergey Spivak`}
+]
+};
+
+/* ===================== HELPERS ===================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = s => String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase()
+  .replace(/ł/g,"l").replace(/[’'`.]/g,"").replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ").trim();
+const key = s => norm(s).replace(/^the /,"").replace(/ /g,"");
+const SUFFIX = new Set(["jr","sr","ii","iii"]);
+function surname(n){const w=norm(n).split(" ").filter(x=>!SUFFIX.has(x));return w.length>1?w[w.length-1]:null}
+function lev(a,b){if(a===b)return 0;const m=a.length,n=b.length;if(!m||!n)return m||n;let p=Array.from({length:n+1},(_,i)=>i);for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[n]}
+function parse(q){
+  if(q._ans) return q._ans;
+  const seen=new Set();
+  q._ans = q.a.split(";").map(s=>s.trim()).filter(Boolean).map(s=>{
+    const t=+s[0]; const names=s.slice(2).split("|").map(x=>x.trim());
+    return {t, name:names[0], keys:names.map(key), sur:surname(names[0])};
+  }).filter(x=>{const k=x.keys[0]; if(seen.has(k))return false; seen.add(k); return true});
+  return q._ans;
+}
+function match(q,input){
+  const ans=parse(q), k=key(input);
+  if(k.length<2) return {type:"none"};
+  let hit=ans.filter(a=>a.keys.includes(k));
+  if(hit.length===1) return {type:"ok",a:hit[0],exact:true};
+  const surs=ans.filter(a=>a.sur&&a.sur.replace(/ /g,"")===k);
+  if(k.length>=3&&surs.length===1) return {type:"ok",a:surs[0],exact:true};
+  if(surs.length>1) return {type:"amb"};
+  if(k.length>=5){const ends=ans.filter(a=>a.keys[0].endsWith(k)&&a.keys[0]!==k);if(ends.length===1)return {type:"ok",a:ends[0],exact:true};if(ends.length>1)return {type:"amb"}}
+  // Fuzzy: forgive misspellings, scaled to length. Doubled letters and
+  // common sound-alikes (ph/f, ck/k, ee/i, y/i, z/s) are squashed first.
+  const tol=k.length<=3?0:k.length<=5?1:k.length<=8?2:3;
+  if(tol){const sk=squash(k);let best=99,cands=[];
+    for(const a of ans){const targets=a.keys.slice();if(a.sur&&k.length>=4)targets.push(a.sur.replace(/ /g,""));
+      const d=Math.min(...targets.map(x=>Math.min(lev(k,x),lev(sk,squash(x))+.5)));
+      if(d<best-.001){best=d;cands=[a]}else if(Math.abs(d-best)<.001)cands.push(a)}
+    if(best<=tol){if(cands.length===1)return {type:"ok",a:cands[0],exact:false};return {type:"amb"}}}
+  return {type:"none"};
+}
+function squash(x){return x.replace(/ph/g,"f").replace(/ck/g,"k").replace(/ee|ea|ie/g,"i").replace(/y/g,"i").replace(/z/g,"s").replace(/(.)\1+/g,"$1")}
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function etDate(d=new Date()){return new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(d)}
+function dayIndex(ds){const [y,m,d]=ds.split("-").map(Number);return Math.round((Date.UTC(y,m-1,d)-EPOCH)/864e5)}
+function secsToMidnightET(){const p=Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:TZ,hour12:false,hour:"2-digit",minute:"2-digit",second:"2-digit"}).formatToParts(new Date()).map(x=>[x.type,x.value]));return 86400-((+p.hour%24)*3600+(+p.minute)*60+(+p.second))}
+function rankFor(s){let r=RANKS[0][1];for(const [m,n] of RANKS)if(s>=m)r=n;return r}
+function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("on");clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("on"),1800)}
+const pick=(arr,i)=>arr[((i%arr.length)+arr.length)%arr.length];
+
+/* ===================== TODAY'S CARD ===================== */
+const TODAY = etDate();
+const DAY = Math.max(0, dayIndex(TODAY));
+function buildCard(day){
+  const r=rng(day*9973+17); const order=SLOT_ORDER.slice();
+  for(let i=order.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
+  return order.map(slot=>{
+    if(slot==="women"){const ufc=day%2===0;const q=pick(ufc?BANK.women_ufc:BANK.women_box,Math.floor(day/2));return {...q,slot,label:"Women's · "+(ufc?"UFC":"Boxing")}}
+    const q=pick(BANK[slot],day); return {...q,slot,label:SLOTS[slot].label};
+  });
+}
+const CARD = buildCard(DAY);
+
+/* ===================== STATE ===================== */
+const LS="journeyman_v1";
+let state = load() || {date:TODAY,i:0,res:[],started:false,done:false};
+if(state.date!==TODAY) state={date:TODAY,i:0,res:[],started:false,done:false};
+function load(){try{return JSON.parse(localStorage.getItem(LS))}catch(e){return null}}
+function save(){try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){} queueRemote()}
+const total=()=>state.res.reduce((s,r)=>s+(r.pts||0),0);
+
+/* ===================== SHARED DATA (crowd rarity + leaderboard) ===================== */
+let DB=null, USER=null, UID=null, CROWD={}, OTHERS=[], remoteBusy=Promise.resolve();
+async function initShared(){
+  try{
+    if(!window.claude||!window.claude.use) return;
+    [DB,USER]=await Promise.all([window.claude.use("db"),window.claude.use("user")]);
+    if(!DB||!USER) {DB=null;return}
+    UID=await USER.id(); if(!UID){DB=null;return}
+    const snap=await withTimeout(DB.collection("plays").get(),10000);
+    OTHERS=[]; CROWD={};
+    for(const d of snap.docs){
+      const day=(d.data()||{}).days?.[TODAY]; if(!day) continue;
+      if(d.id===UID){ if(day.done && !state.done){ state=fromRemote(day); try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){} } continue; }
+      OTHERS.push({id:d.id,s:+day.s||0,done:!!day.done});
+      for(const [pid,c] of Object.entries(day.a||{})){CROWD[pid]=CROWD[pid]||{n:0,c:{}};CROWD[pid].n++;if(c)CROWD[pid].c[c]=(CROWD[pid].c[c]||0)+1}
+    }
+    render();
+  }catch(e){ DB=null }
+}
+function withTimeout(p,ms){return Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej({code:"timeout"}),ms))])}
+function fromRemote(day){
+  return {date:TODAY,started:true,done:true,i:CARD.length,res:CARD.map(q=>{const c=(day.a||{})[q.id]||"";const a=parse(q).find(x=>x.name===c);const t=(day.t||{})[q.id]||(a?a.t:0);return {pid:q.id,ans:c,canon:c,tier:c?t:0,pts:c&&t?TIERS[t].p:0}})};
+}
+function queueRemote(){
+  if(!DB||!UID||!state.started) return;
+  const body={a:{},t:{},s:total(),done:state.done,at:Date.now()};
+  for(const r of state.res){body.a[r.pid]=r.canon||"";body.t[r.pid]=r.tier||0}
+  remoteBusy=remoteBusy.then(async()=>{
+    try{const ref=DB.doc("plays/"+UID);const cur=await ref.get();const days={...((cur.exists&&cur.data().days)||{})};days[TODAY]=body;await ref.set({days})}catch(e){}
+  });
+}
+function crowdTier(q,a){
+  const cr=CROWD[q.id]; const n=cr?cr.n:0;
+  if(n<30) return {tier:a.t,share:null,n};
+  const share=(cr.c[a.name]||0)/n;
+  const ct=share>=.20?1:share>=.08?2:share>=.03?3:share>=.01?4:5;
+  return {tier:n<150?Math.round((a.t+ct)/2):ct,share,n};
+}
+
+/* ===================== VIEWS ===================== */
+let timerInt=null;
+function render(){
+  clearInterval(timerInt);
+  const app=$("#app");
+  const head="";
+  if(state.done) return app.innerHTML=head+resultsView(), wireResults();
+  if(!state.started) return app.innerHTML=head+homeView(), wireHome();
+  if(state.reveal) return app.innerHTML=head+revealView(), wireReveal();
+  app.innerHTML=head+roundView(); wireRound();
+}
+function ladderHTML(){return `<div class="ladder">${[1,2,3,4,5].map(t=>`<div class="rung"><div class="bar" style="width:${18+t*14}%;background:${TIERS[t].c}"></div>${TIERS[t].n}<span class="pts">${TIERS[t].p} pts</span></div>`).join("")}</div>`}
+function homeView(){
+  return `<h1>Journeyman <em>Combat Trivia</em></h1>
+  <p class="lede"><b>Journeyman</b> is a daily UFC and boxing trivia card. Every prompt has dozens of right answers, and the rarer yours is, the more it's worth.</p>
+  <div class="rules"><div class="rule"><b>7</b><span>Rounds</span></div><div class="rule"><b>${ROUND_SECS}s</b><span>Per round</span></div><div class="rule"><b>1</b><span>Card a day</span></div></div>
+  <div class="card"><div class="label">Scorecard</div>${ladderHTML()}</div>
+  <div class="spacer"></div>
+  <button class="btn" id="start">Touch gloves</button>
+  <p class="foot">Same card for everyone, new card at midnight Eastern. Misses don't end the round, so keep throwing until the bell. Men's and women's, UFC and boxing, from the Jack Johnson era to last month.</p>`;
+}
+function wireHome(){$("#start").onclick=()=>{state.started=true;state.i=0;state.res=[];state.roundStart=Date.now();save();render()}}
+function pipsHTML(){return `<div class="pips">${CARD.map((q,i)=>{const r=state.res[i];return `<div class="pip" style="background:${r?(r.tier?TIERS[r.tier].c:"#3a3540"):(i===state.i?"var(--bone)":"")}"></div>`}).join("")}</div>`}
+function roundView(){
+  const q=CARD[state.i];
+  return `${pipsHTML()}<div class="rhead"><div class="rnum">Round ${state.i+1}<span> / 7</span></div>
+  <div class="chips"><span class="chip">${esc(q.label)}</span><span class="chip ${q.d==="H"?"h":""}">${q.d==="H"?"Hard":"Medium"}</span></div></div>
+  <div class="timer"><i id="tbar"></i></div><div class="secs" id="secs">${ROUND_SECS}</div>
+  <div class="prompt">${esc(q.q)}</div>
+  <form class="inrow" id="f" autocomplete="off"><input class="ans" id="ans" placeholder="Type a name…" autocapitalize="words" spellcheck="false" enterkeyhint="go"><button class="btn go">Throw</button></form>
+  <div class="msg" id="msg"></div>`;
+}
+function wireRound(){
+  const q=CARD[state.i]; const input=$("#ans"); input.focus();
+  if(!state.roundStart){state.roundStart=Date.now();save()}
+  const tick=()=>{const left=ROUND_SECS-(Date.now()-state.roundStart)/1000;
+    if(left<=0){clearInterval(timerInt);return finishRound(null)}
+    $("#tbar").style.transform=`scaleX(${left/ROUND_SECS})`;const s=$("#secs");s.textContent=Math.ceil(left);s.classList.toggle("low",left<6)};
+  tick(); timerInt=setInterval(tick,100);
+  $("#f").onsubmit=e=>{e.preventDefault();const v=input.value.trim();if(!v)return;
+    const m=match(q,v);
+    if(m.type==="ok"){clearInterval(timerInt);return finishRound(m.a,v,!m.exact)}
+    const msg=$("#msg");msg.textContent=m.type==="amb"?"More than one fighter fits. Add a first name.":`"${v}" isn't on the card. Keep swinging.`;
+    input.value="";input.classList.remove("shake");void input.offsetWidth;input.classList.add("shake")};
+}
+function finishRound(a,typed,fixed){
+  const q=CARD[state.i];
+  if(a){const c=crowdTier(q,a);state.res[state.i]={pid:q.id,ans:a.name,canon:a.name,typed:fixed?typed:"",tier:c.tier,pts:TIERS[c.tier].p,share:c.share}}
+  else state.res[state.i]={pid:q.id,ans:"",canon:"",tier:0,pts:0};
+  state.reveal=true; state.roundStart=null; save(); render();
+}
+function revealView(){
+  const q=CARD[state.i], r=state.res[state.i];
+  const rr=rng(DAY*31+state.i);
+  const deep=parse(q).filter(a=>a.t>=3&&a.name!==r.canon).map(a=>[a,rr()]).sort((x,y)=>y[0].t-x[0].t||x[1]-y[1]).map(x=>x[0]);
+  const t=r.tier?TIERS[r.tier]:null;
+  const top=`${pipsHTML()}<div class="said"><div class="label">Your answer</div><div class="ans">${esc(r.ans||"—")}</div>${r.typed?`<div class="fix">You typed “${esc(r.typed)}” · corrected to <b>${esc(r.ans)}</b></div>`:""}</div>`;
+  const meter=t?`<div class="meter" id="meter"><div class="mhead"><span>Impact meter</span><span id="mstat">Landing…</span></div>
+    <div class="track" id="track">${[1,2,3,4,5].map(i=>`<div class="band" data-t="${i}" style="--c:${TIERS[i].c}"><span>${TIERS[i].n}</span><em>${TIERS[i].p}</em></div>`).join("")}
+    <div class="trail" id="trail"></div><div class="glove" id="glove">🥊</div></div></div>`
+    :`<div class="verdict"><div class="tier" style="color:var(--red)">The bell rang</div><div class="pts">+0 pts</div></div>`;
+  const result=t?`<div class="verdict" style="border-color:${t.c}"><div class="tier" style="color:${t.c}">${t.n}</div><div class="pts">+${t.p} pts</div>
+      ${r.share!=null?`<div class="crowd">${Math.round(r.share*100)}% of today's fighters said this</div>`:""}</div><div class="spacer"></div>`:"";
+  return `${top}${meter}<div class="after ${t?"":"on"}" id="after">${result}
+  <div class="deep"><div class="label">Deep cuts on the card</div><ul>${deep.slice(0,3).map(a=>`<li>${esc(a.name)}<span style="color:${TIERS[a.t].c}">${TIERS[a.t].n}</span></li>`).join("")}</ul></div>
+  <div class="spacer"></div><button class="btn" id="nx">${state.i===CARD.length-1?"Go to the scorecards":"Next round"}</button></div>`;
+}
+function dropMeter(r,done){
+  const track=$("#track"),glove=$("#glove"),trail=$("#trail"),bands=[...track.querySelectorAll(".band")];
+  const jitter=(rng(DAY*101+state.i)()-.5)*9;
+  const target=Math.min(97,Math.max(3,(r.tier-1)*20+10+jitter));  // % from top
+  const dur=1600+r.tier*320, t0=performance.now();
+  const ease=x=>{const e=1-Math.pow(1-x,4);return Math.min(1,e+0.018*Math.sin(x*Math.PI*7)*(1-x))};
+  const step=now=>{const x=Math.min(1,(now-t0)/dur), y=target*ease(x);
+    glove.style.top=y+"%"; trail.style.height=y+"%";
+    const cur=Math.min(5,Math.floor(y/20)+1); bands.forEach(b=>b.classList.toggle("lit",+b.dataset.t<=cur));
+    if(x<1) return requestAnimationFrame(step);
+    bands.forEach(b=>b.classList.toggle("hit",+b.dataset.t===r.tier));
+    track.classList.add("thud"); const st=$("#mstat"); st.textContent=TIERS[r.tier].n; st.style.color=TIERS[r.tier].c;
+    setTimeout(done,350)};
+  requestAnimationFrame(step);
+}
+function wireReveal(){
+  const r=state.res[state.i];
+  const show=()=>{const a=$("#after");if(!a)return;a.classList.add("on");$("#nx").focus()};
+  if(r.tier) dropMeter(r,show); else show();
+  const b=$("#nx");b.onclick=()=>{state.reveal=false;state.i++;if(state.i>=CARD.length)state.done=true;else state.roundStart=Date.now();save();render()}}
+function shareText(){return `JOURNEYMAN #${DAY+1} 🥊 ${total()}/700\n${state.res.map(r=>r.tier?TIERS[r.tier].e:"⬛").join("")}\n${rankFor(total())}`}
+function resultsView(){
+  const s=total();
+  const board=DB?boardHTML(s):"";
+  return `<div class="score"><div class="label">Final scorecard</div><div class="big">${s}<small>/700</small></div><div class="rank">${rankFor(s)}</div></div>
+  <div class="cardline">${CARD.map((q,i)=>{const r=state.res[i]||{};const t=r.tier?TIERS[r.tier]:null;return `<div class="bout" style="border-left-color:${t?t.c:"#3a3540"}"><div class="n">${i+1}</div><div><div class="q">${esc(q.q)}</div><div class="a">${r.ans?esc(r.ans):"—"}</div></div><div class="t" style="color:${t?t.c:"var(--muted)"}"><b>${r.pts||0}</b>${t?t.n:"No answer"}</div></div>`}).join("")}</div>
+  <div class="row2"><button class="btn" id="share">Copy result</button><button class="btn ghost" id="how">How scoring works</button></div>
+  ${board}
+  <div class="next">Next card in<b id="cd">--:--:--</b></div>`;
+}
+function boardHTML(mine){
+  const rows=OTHERS.filter(o=>o.done).concat([{id:UID,s:mine,done:true,me:true}]).sort((a,b)=>b.s-a.s).slice(0,10);
+  return `<div class="board"><div class="label">Today's leaderboard</div><ol id="board">${rows.map((r,i)=>`<li class="${r.me?"me":""}" data-id="${esc(r.id)}"><span>${i+1}. <span class="nm">${r.me?"You":"Fighter"}</span></span><span>${r.s}</span></li>`).join("")}</ol></div>`;
+}
+async function nameBoard(){
+  if(!USER||!USER.profiles) return;
+  try{const ids=[...document.querySelectorAll("#board li:not(.me)")].map(l=>l.dataset.id);if(!ids.length)return;
+    const ps=await USER.profiles(ids);document.querySelectorAll("#board li:not(.me)").forEach(l=>{const p=ps&&ps[l.dataset.id];l.querySelector(".nm").textContent=(p&&p.name)||"Fighter"})}catch(e){}
+}
+function wireResults(){
+  $("#share").onclick=async()=>{try{await navigator.clipboard.writeText(shareText());toast("Copied. Go talk your trash.")}catch(e){toast("Couldn't copy here")}};
+  $("#how").onclick=()=>{const m=document.createElement("div");m.className="modal";m.innerHTML=`<div class="card"><h3>How scoring works</h3><p>Every prompt has a long list of correct answers, and each one sits in a tier. The obvious names are Casual. The ones only a real student of the sport remembers are Unanimous Champ.</p>${ladderHTML()}<div class="spacer"></div><p>Early on, tiers are set by hand. Once enough people play a card, the tiers follow what players actually answered: say something only 1 in 100 people said and you're near the top.</p><button class="btn ghost" id="cl">Close</button></div>`;document.body.appendChild(m);m.onclick=e=>{if(e.target===m||e.target.id==="cl")m.remove()}};
+  const cd=()=>{const s=secsToMidnightET();const el=$("#cd");if(el)el.textContent=[s/3600|0,(s%3600)/60|0,s%60].map(x=>String(x).padStart(2,"0")).join(":")};
+  cd(); timerInt=setInterval(cd,1000); nameBoard();
+}
+
+/* resume a round in progress: a reload mid-round doesn't reset the clock */
+render();
+initShared();
+</script>
+</body>
+</html>
